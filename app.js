@@ -21,6 +21,12 @@ UI.prototype.addBook = function (book) {
   bookList.appendChild(row)
 }
 
+UI.prototype.deleteBook = function (target) {
+  if (target.className == "delete") {
+    target.parentElement.parentElement.remove()
+  }
+}
+
 UI.prototype.clearForm = function () {
   document.getElementById("title").value = ""
   document.getElementById("author").value = ""
@@ -62,6 +68,14 @@ document.getElementById("book-form").addEventListener("submit", function (e) {
     ui.clearForm()
     ui.showAlert("Book added!!", "success")
   }
+
+  e.preventDefault()
+})
+
+document.getElementById("book-list").addEventListener("click", function (e) {
+  const ui = new UI()
+  ui.deleteBook(e.target)
+  ui.showAlert("Book deleted", "success")
 
   e.preventDefault()
 })
