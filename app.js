@@ -51,7 +51,7 @@ UI.prototype.showAlert = function (message, alertType) {
   }, 3000)
 }
 
-// Event listener
+// Event listeners
 document.getElementById("book-form").addEventListener("submit", function (e) {
   const title = document.getElementById("title").value,
     author = document.getElementById("author").value,
