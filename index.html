@@ -24,6 +24,18 @@
       .error {
         background-color: red;
       }
+      .delete {
+        color: red;
+        text-decoration: none;
+      }
+      .delete:hover {
+        color: red;
+        font-weight: 900;
+        transform: scale(0.7);
+      }
+      .delete-cell {
+        text-align: center;
+      }
     </style>
     <title>Book List</title>
   </head>
@@ -45,11 +57,15 @@
         />
       </form>
       <table class="u-full-width" id="book-list">
-        <tr>
-          <th>Title</th>
-          <th>Author</th>
-          <th>ISBN</th>
-        </tr>
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Author</th>
+            <th>ISBN</th>
+            <th>Delete</th>
+          </tr>
+        </thead>
+        <tbody id="book-list-row"></tbody>
       </table>
     </div>
   </body>

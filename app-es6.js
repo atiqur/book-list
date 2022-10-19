@@ -7,19 +7,20 @@ class Book {
 }
 
 class UI {
-  addBook(book) {
-    const bookList = document.getElementById("book-list")
+  addBookToList(book) {
+    const bookList = document.getElementById("book-list-row")
     const row = document.createElement("tr")
+    row.className = "row"
     row.innerHTML = `
     <td>${book.title}</td>
     <td>${book.author}</td>
     <td>${book.isbn}</td>
-    <td><a href="#" class="delete">X</a></td>
+    <td class="delete-cell"><a href="#" class="delete">X</a></td>
   `
     bookList.appendChild(row)
   }
 
-  deleteBook(target) {
+  deleteBookFromList(target) {
     if (target.className == "delete") {
       target.parentElement.parentElement.remove()
     }
@@ -50,6 +51,48 @@ class UI {
   }
 }
 
+// Local storage class
+class Store {
+  static getBooks() {
+    let books
+    if (localStorage.getItem("books") === null) {
+      books = []
+    } else {
+      books = JSON.parse(localStorage.getItem("books"))
+    }
+    return books
+  }
+
+  static displayBooks() {
+    const books = Store.getBooks()
+    books.forEach(function (book) {
+      const ui = new UI()
+      ui.addBookToList(book)
+    })
+  }
+
+  static addBook(book) {
+    const books = Store.getBooks()
+    books.push(book)
+    localStorage.setItem("books", JSON.stringify(books))
+  }
+
+  static deleteBook(isbn) {
+    const books = Store.getBooks()
+
+    books.forEach(function (book, index) {
+      if (book.isbn === isbn) {
+        books.splice(index, 1)
+      }
+    })
+
+    localStorage.setItem("books", JSON.stringify(books))
+  }
+}
+
+// DOM load event
+document.addEventListener("DOMContentLoaded", Store.displayBooks)
+
 // Event listeners
 document.getElementById("book-form").addEventListener("submit", function (e) {
   const title = document.getElementById("title").value,
@@ -63,8 +106,9 @@ document.getElementById("book-form").addEventListener("submit", function (e) {
   if (title == "" || author == "" || isbn == "") {
     ui.showAlert(`Please fill up all the fields`, "error")
   } else {
-    ui.addBook(book)
+    ui.addBookToList(book)
     ui.clearForm()
+    Store.addBook(book)
     ui.showAlert("Book added!!", "success")
   }
 
@@ -73,7 +117,8 @@ document.getElementById("book-form").addEventListener("submit", function (e) {
 
 document.getElementById("book-list").addEventListener("click", function (e) {
   const ui = new UI()
-  ui.deleteBook(e.target)
+  ui.deleteBookFromList(e.target)
+  Store.deleteBook(e.target.parentElement.previousElementSibling.textContent)
   ui.showAlert("Book deleted", "success")
 
   e.preventDefault()
